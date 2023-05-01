@@ -19,9 +19,9 @@
     $: allSelected = $state.nodes.every(isNodeSelected);
     const isNodeSelected = (node: NodeInfo): boolean => {
         if (node.nodeType === NodeType.Case) {
-            return get(node.selected);
+            return node.selected;
         } else if (node.nodeType === NodeType.Suite) {
-            return get(node.selected); // && node.children.entries(isNodeSelected);
+            return node.selected; // && node.children.entries(isNodeSelected);
         } else {
             // NodeType.Folder
             return node.children.every(isNodeSelected);

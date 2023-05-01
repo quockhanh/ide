@@ -1,6 +1,6 @@
 /* eslint-disable no-debugger */
-import { get, writable, type Readable } from 'svelte/store';
-import { NodeType, type NodeInfo } from './NodeInfo';
+import { writable, type Readable } from 'svelte/store';
+import { NodeInfo, NodeType } from './NodeInfo';
 
 export interface ITestExplorerState {
     nodes: NodeInfo[];
@@ -64,21 +64,24 @@ function contextReducer(state: ITestExplorerState, action: TestExplorerAction): 
         }
         case TestExplorerActionType.SelectNode: {
             const { node, selected } = action;
-            if (node.nodeType === NodeType.Suite) {
-                node.selected.set(selected);
-                node.children.forEach((c) => c.selected.set(selected));
-            } else if (node.nodeType === NodeType.Case) {
-                node.selected.set(selected);
-                const suiteNode = node.parent;
-                if (suiteNode) {
-                    const allCasesSelected = suiteNode.children.every((c) => get(c.selected));
-                    if (get(suiteNode.selected) !== allCasesSelected) {
-                        suiteNode.selected.set(allCasesSelected);
+            const nodes = [...state.nodes];
+            const foundNode = NodeInfo.findNodeByPath(nodes, node.toTreePath());
+            if (foundNode) {
+                if (foundNode.nodeType === NodeType.Suite) {
+                    foundNode.selected = selected;
+                    foundNode.children.forEach((c) => c.selected = selected);
+                } else if (foundNode.nodeType === NodeType.Case) {
+                    foundNode.selected = selected;
+                    const suiteNode = foundNode.parent;
+                    if (suiteNode) {
+                        const allCasesSelected = suiteNode.children.every((c) => c.selected);
+                        if (suiteNode.selected !== allCasesSelected) {
+                            suiteNode.selected = allCasesSelected;
+                        }
                     }
                 }
             }
-
-            return { ...state };
+            return { ...state, nodes };
         }
         case TestExplorerActionType.SelectAllNode: {
             const newNodes = [...state.nodes];
@@ -96,7 +99,7 @@ function contextReducer(state: ITestExplorerState, action: TestExplorerAction): 
 function setSelected(nodes: NodeInfo[], selected: boolean): void {
     for (const node of nodes) {
         if (node.nodeType === NodeType.Suite || node.nodeType === NodeType.Case) {
-            node.selected.set(selected);
+            node.selected = selected;
         }
         if (node.children) {
             setSelected(node.children, selected);

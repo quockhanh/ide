@@ -106,7 +106,7 @@
                     if (nodeType === NodeType.Suite) {
                         newNode.name = part;
                         newNode.suiteInfo = suite;
-                        newNode.selected.set(true);
+                        newNode.selected = true;
                         const caseNodes = suite.testCases.map(
                             (c) =>
                                 new NodeInfo({
@@ -232,7 +232,7 @@
             if ((node.nodeType === NodeType.Folder || node.nodeType === NodeType.Suite) && node.children) {
                 const matchingChildren = findSelectedCases(node.children);
                 result.push(...matchingChildren);
-            } else if (get(node.selected)) {
+            } else if (node.selected) {
                 // TestCase && selected
                 result.push(node);
             }

@@ -9,8 +9,6 @@
     export let node: NodeInfo;
     export let level: number = 0;
 
-    const { selected } = node;
-
     const testExplorerContext = getContext(testExplorerContextKey) as ITestExplorerContext;
     let { state, dispatch: contextDispatch } = testExplorerContext;
 
@@ -23,6 +21,7 @@
     $: selectable = true;
     $: showToggleIcon = hasChildren;
     $: expanded = node.expanded;
+    $: selected = node.selected;
 
     $: containerClass = `treeview-item 
         ${expanded ? 'treeview-item-opened' : ''}`;
@@ -65,7 +64,7 @@
                         id={node.suiteInfo.fullyQualifiedName}
                         name={node.suiteInfo.fullyQualifiedName}
                         type="checkbox"
-                        checked={$selected}
+                        checked={selected}
                         on:change={handleSelectChange}
                     />
                     <label for={node.suiteInfo.fullyQualifiedName} class="ml-2">{label}</label>
@@ -74,7 +73,7 @@
                         id={node.caseInfo.fullyQualifiedName}
                         name={node.caseInfo.fullyQualifiedName}
                         type="checkbox"
-                        checked={$selected}
+                        checked={selected}
                         on:change={handleSelectChange}
                     />
                     <label for={node.caseInfo.fullyQualifiedName} class="ml-2">{label}</label>

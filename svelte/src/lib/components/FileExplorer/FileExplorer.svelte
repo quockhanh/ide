@@ -353,6 +353,17 @@
         }
     };
 
+    const buildTestCaseData = (path: string, testCase: ITestCase): ITestCaseData | null => {
+        let name = toTreePath(path, $appState.projectFile?.folderPath!, uiContext.pathSeparator) ?? "";
+        name = name.replace(new RegExp(`^${StandardFolder.TestCases}${NodeInfo.PATH_SEPARATOR}`), "");
+
+        return {
+            id: testCase.id,
+            name: name,
+            filePath: path,
+        } as ITestCaseData;
+    };
+
     const loadTestRoutineData = async (path: string) => {
         try {
             const fileContent = await fileSystem.readFile(path);
@@ -374,17 +385,6 @@
             console.log("Cannot load file", path);
             console.error(error);
         }
-    };
-
-    const buildTestCaseData = (path: string, testCase: ITestCase): ITestCaseData | null => {
-        let name = toTreePath(path, $appState.projectFile?.folderPath!, uiContext.pathSeparator) ?? "";
-        name = name.replace(new RegExp(`^${StandardFolder.TestCases}${NodeInfo.PATH_SEPARATOR}`), "");
-
-        return {
-            id: testCase.id,
-            name: name,
-            filePath: path,
-        } as ITestCaseData;
     };
 
     const buildTestRoutineData = (path: string, testRoutine: ITestRoutine): ITestRoutineData | null => {

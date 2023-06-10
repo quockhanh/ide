@@ -231,10 +231,13 @@
     const updateStepData = () => {
         const steps = [...$listStep.items];
         steps.forEach((step) => {
-            step.data = $listDataSet.items.map((ds) => ({
-                id: ds.id,
-                value: step.data.find((x: IDictionary) => x.id === ds.id)?.value ?? "",
+            // ignore 'comment' rows which do not have step data
+            if (step.data) {
+                step.data = $listDataSet.items.map((ds) => ({
+                    id: ds.id,
+                    value: step.data.find((x: IDictionary) => x.id === ds.id)?.value ?? "",
             }));
+            }
         });
 
         listStepDispatch({
@@ -277,7 +280,9 @@
     </div>
 
     {#if activeBtn === "btnDataSets"}
-        <TestRoutineDataSet {formContext} {listDataSetContext} on:change={handleDataSetChange} on:save={handleSave} />
+        <TestRoutineDataSet
+            {formContext} {listDataSetContext} 
+            on:change={handleDataSetChange} on:save={handleSave} />
     {:else if activeBtn === "btnSteps"}
         <TestRoutineSteps
             {formContext}

@@ -120,25 +120,16 @@
     let relatedTestCasePaths: string[] = [];
 
     const hasReferenceData = async (dataSetItem: IDictionary): Promise<boolean> => {
-        const meta = await codeGenerator.generateSourceProjectMetadata($appState.projectFile!);
-        if (!meta) {
-            return false;
-        }
+        const testCaseFolderPath = combinePath(
+            [$appState.projectFile?.folderPath ?? '', StandardFolder.TestCases],
+            uiContext.pathSeparator
+        );
 
-        if (meta.testCases) {
-            const testCaseFolderPath = combinePath(
-                [$appState.projectFile?.folderPath ?? '', StandardFolder.TestCases],
-                uiContext.pathSeparator
-            );
+        relatedTestCasePaths = Array.from($appState.testCases.values())
+            .filter((tc) => tc.steps.some((s) => s.type === 'routine' 
+                && s.routine === $formData.values.id && s.dataset?.includes(dataSetItem.id)))
+            .map((tc) => toTreePath(tc.filePath, testCaseFolderPath, uiContext.pathSeparator) ?? '');
 
-            relatedTestCasePaths = meta.testCases
-                .filter((tc) => tc.content.steps.some((s) =>
-                    s.type === 'routine' && s.routine === $formData.values.id && s.dataset?.includes(dataSetItem.id)))
-                .map((tc) => {
-                    const fileSystemPath = combinePath([tc.folderPath, tc.fileName], uiContext.pathSeparator);
-                    return toTreePath(fileSystemPath, testCaseFolderPath, uiContext.pathSeparator) ?? '';
-                });
-        }
         if (relatedTestCasePaths.length > 0) {
             showReferenceWarningDialog = true;
             return true;

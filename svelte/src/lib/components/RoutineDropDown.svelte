@@ -5,6 +5,7 @@
     import type { IDropdownOption } from "$lib/controls/DropdownField";
     import FancyDropdownField from "$lib/controls/FancyDropdownField.svelte";
     import FancyMultiSelectionField from "$lib/controls/FancyMultiSelectionField.svelte";
+    import MultiSelectionField from "$lib/controls/MultiSelectionField.svelte";
     import { fileSystem } from "$lib/ipc";
     import type { ITestRoutine } from "rockmelonqa.common";
     import { createEventDispatcher, getContext, onMount } from "svelte";
@@ -103,6 +104,14 @@
                     on:change={handleSelectDataset}
                 />
             </div>
+            <!-- <div class="flex-1">
+                <MultiSelectionField 
+                    name={name + "_dataset"}
+                    values={dataset}
+                    options={datasetOptions}
+                    on:change={handleSelectDataset}
+                />
+            </div> -->
         </div>
     </div>
 </div>
